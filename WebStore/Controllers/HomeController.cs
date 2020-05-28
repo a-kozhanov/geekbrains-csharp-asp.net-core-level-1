@@ -8,29 +8,26 @@ namespace WebStore.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly AppDbContext _appDbContext;
+        public IActionResult Index() => View();
 
-        public HomeController(ILogger<HomeController> logger, AppDbContext appDbContext)
-        {
-            _logger = logger;
-            _appDbContext = appDbContext;
-        }
+        public IActionResult Blog() => View();
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public IActionResult BlogSingle() => View();
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        public IActionResult Cart() => View();
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
-        }
+        public IActionResult CheckOut() => View();
+
+        public IActionResult ContactUs() => View();
+
+        public IActionResult Login() => View();
+
+        public IActionResult Products() => View();
+
+        public IActionResult ProductDetails() => View();
+
+        public IActionResult Shop() => View();
+
+        public IActionResult ErrorPage404() => View("_404");
     }
 }

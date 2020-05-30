@@ -5,15 +5,11 @@
 }
 
 <div class="container">
-    <h1>List employee</h1>
-
-    <p>
-        <a asp-action="Create">Create new employee</a>
-    </p>
-
+    <h2 class="title text-center">Список сотрудников</h2>
     <table class="table .table-striped">
         <thead>
         <tr>
+            <th></th>
             <th>
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
@@ -37,6 +33,11 @@
         {
             <tr>
                 <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" title="Данные сотрудника">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                    </a>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.LastName)
                 </td>
                 <td>
@@ -52,9 +53,34 @@
                     @Html.DisplayFor(modelItem => item.City)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
+
+
+                    @*<a asp-action="Details" asp-route-id="@item.Id">
+                                <button class="btn" type="button" title="Детали">
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                </button>
+                            </a>*@
+
+                    <a asp-action="Create" asp-route-id="@item.Id">
+                        <button class="btn btn-primary btn-sm rounded-0" type="button" title="Добавить">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </a>
+
+                    <a asp-action="Edit" asp-route-id="@item.Id">
+                        <button class="btn btn-warning btn-sm rounded-0" type="button" title="Редактировать">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                    </a>
+
+                    <a asp-action="Delete" asp-route-id="@item.Id">
+                        <button class="btn btn-danger btn-sm rounded-0" type="button" title="Удалить">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </a>
                 </td>
             </tr>
         }

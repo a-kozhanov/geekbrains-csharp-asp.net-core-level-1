@@ -46,14 +46,18 @@ namespace WebStore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind(
-                "Id,LastName,FirstName,Title,TitleOfCourtesy,BirthDate,HireDate,Address,City,Region,PostalCode,Country,HomePhone,Extension,Photo,Notes,ReportsTo,PhotoPath")]
-            Employee employee)
+            [Bind("LastName,FirstName,Title,TitleOfCourtesy,BirthDate,HireDate,Address,City,Region,PostalCode,Country,HomePhone,Extension,Photo,Notes,ReportsTo")] Employee employee)
         {
             if (!ModelState.IsValid) return View(employee);
 
+            var lastId = _context.Employee.Max(x => x.Id);
+
+            employee.Id = lastId + 1;
+
             _context.Add(employee);
+
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

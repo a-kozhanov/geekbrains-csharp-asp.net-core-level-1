@@ -118,8 +118,20 @@
         </div>
         <div class="form-group">
             @* <input type="submit" value="Create" class="btn btn-primary"/> *@
-            <input type="submit" asp-controller="Employees" asp-action="Index" value="Обратно к списку" class="btn btn-success"/>
-            <input type="submit" value="Создать" class="btn btn-primary"/>
+            @* <input type="submit" asp-controller="Employees" asp-action="Index" value="Обратно к списку" class="btn btn-success"/> *@
+            @* <input type="submit" value="Создать" class="btn btn-primary"/> *@
+
+            <a asp-action="Index">
+                <button class="btn btn-success" type="button" title="Обратно к списку">
+                    <span class=""> Обратно к списку</span>
+                </button>
+            </a>
+
+
+            <button class="btn btn-warning" type="submit" title="Создать сотрудника">
+                <span class="glyphicon glyphicon-plus"> Создать</span>
+            </button>
+
         </div>
         @* <div class="form-group col-sm-6"> *@
         @*     <input type="submit" asp-controller="Employees" asp-action="Index" value="Обратно к списку" class="btn btn-success"/> *@
@@ -127,6 +139,7 @@
         @*     <input type="submit" value="Создать" class="btn btn-primary"/> *@
         @* </div> *@
     </form>
+    <hr/>
 </div>
 
 @* <div> *@

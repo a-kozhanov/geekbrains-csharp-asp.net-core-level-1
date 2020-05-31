@@ -23,7 +23,8 @@ namespace WebStore
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddControllersWithViews();
-            services.AddApplicationInsightsTelemetry();
+
+            services.AddRazorPages().AddRazorRuntimeCompilation();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -35,15 +36,14 @@ namespace WebStore
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseStatusCodePagesWithRedirects("/Error/{0}");
+                // app.UseStatusCodePagesWithReExecute("/Error/{0}");
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

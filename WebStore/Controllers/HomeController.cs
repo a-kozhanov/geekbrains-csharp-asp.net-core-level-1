@@ -1,8 +1,4 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using WebStore.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace WebStore.Controllers
 {
@@ -28,6 +24,7 @@ namespace WebStore.Controllers
 
         public IActionResult Shop() => View();
 
-        public IActionResult ErrorPage404() => View("_404");
+        public IActionResult ErrorPage404() =>
+            RedirectToAction("HttpStatusCodeHandler", "Error", new {statusCode = 404});
     }
 }

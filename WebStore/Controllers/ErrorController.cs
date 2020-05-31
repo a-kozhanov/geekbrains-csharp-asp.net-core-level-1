@@ -4,26 +4,19 @@ namespace WebStore.Controllers
 {
     public class ErrorController : Controller
     {
-        public IActionResult Index()
+        [Route("Error/{statusCode}")]
+        public IActionResult HttpStatusCodeHandler(int statusCode)
         {
-            return View("Error");
-        }
+            switch (statusCode)
+            {
+                case 404:
+                    ViewBag.ErrorMessage = "Извините, запрашиваемый вами ресурс не найден";
+                    return View("Error404");
+                default:
+                    ViewBag.ErrorMessage = "Упс, что-то пошло не так";
+                    break;
+            }
 
-        [Route("404")]
-        public IActionResult PageNotFound()
-        {
-            return View("_404");
-        }
-
-        [Route("{code:int}")]
-        public IActionResult Error(int code)
-        {
-            return View();
-        }
-
-        [Route("500")]
-        public IActionResult Error500()
-        {
             return View("Error");
         }
     }

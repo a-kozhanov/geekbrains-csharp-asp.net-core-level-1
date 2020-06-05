@@ -1,91 +1,50 @@
-﻿@model IEnumerable<WebStore.Models.Employee>
-
+﻿@model IEnumerable<Employee>
 @{
     ViewData["Title"] = "Index";
 }
 
+
 <div class="container">
-    <h2 class="title text-center">Список сотрудников</h2>
-    <div>
-        <table class="table .table-striped">
-            <thead>
+    <a asp-action="Edit" class="btn btn-success">Создать!</a>
+
+    <hr/>
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th>id</th>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Возраст</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var employee in Model)
+        {
             <tr>
-                <th></th>
-                <th>
-                    @Html.DisplayNameFor(model => model.LastName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FirstName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.BirthDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.City)
-                </th>
-                <th></th>
+                <td>
+                    <a asp-controller="Employees" asp-action="EmployeeDetails" asp-route-id="@employee.Id">
+                        <i class="fa fa-info-circle"></i>
+                    </a>
+                </td>
+                <td>@employee.Id</td>
+                <td>@employee.Surname</td>
+                <td>@employee.FirstName</td>
+                <td>@employee.Patronymic</td>
+                <td>@employee.Age</td>
+                @*<td><a href="@Url.Action("EmployeeDetails", "Employees")">Информация</a></td>*@
+                <td>
+                    <a asp-controller="Employees" asp-action="Edit" asp-route-id="@employee.Id" class="btn btn-success">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <a asp-controller="Employees" asp-action="Delete" asp-route-id="@employee.Id" class="btn btn-danger">
+                        <i class="fa fa-trash-o"></i>
+                    </a>
+                </td>
             </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id" title="Данные сотрудника">
-                            <span class="glyphicon glyphicon-info-sign"></span>
-                        </a>
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.BirthDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.City)
-                    </td>
-                    <td>
-                        @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
-
-
-                        @*<a asp-action="Details" asp-route-id="@item.Id">
-                                <button class="btn" type="button" title="Детали">
-                                    <span class="glyphicon glyphicon-info-sign"></span>
-                                </button>
-                            </a>*@
-
-                        <a asp-action="Create" asp-route-id="@item.Id">
-                            <button class="btn btn-primary btn-sm rounded-0" type="button" title="Добавить">
-                                <span class="glyphicon glyphicon-plus"></span>
-                            </button>
-                        </a>
-
-                        <a asp-action="Edit" asp-route-id="@item.Id">
-                            <button class="btn btn-warning btn-sm rounded-0" type="button" title="Редактировать">
-                                <span class="glyphicon glyphicon-edit"></span>
-                            </button>
-                        </a>
-
-                        <a asp-action="Delete" asp-route-id="@item.Id">
-                            <button class="btn btn-danger btn-sm rounded-0" type="button" title="Удалить">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </a>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    </div>
+        }
+        </tbody>
+    </table>
 </div>

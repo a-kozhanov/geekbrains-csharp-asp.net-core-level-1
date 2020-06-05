@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using WebStore.Models;
 
 namespace WebStore.Controllers
 {
@@ -6,25 +11,22 @@ namespace WebStore.Controllers
     {
         public IActionResult Index() => View();
 
+        public IActionResult Throw(string id) => throw new ApplicationException(id ?? "Error!");
+
         public IActionResult Blog() => View();
-
+        
         public IActionResult BlogSingle() => View();
-
+        
         public IActionResult Cart() => View();
-
+        
         public IActionResult CheckOut() => View();
-
+        
         public IActionResult ContactUs() => View();
-
+        
         public IActionResult Login() => View();
-
-        public IActionResult Products() => View();
-
+        
         public IActionResult ProductDetails() => View();
-
+        
         public IActionResult Shop() => View();
-
-        public IActionResult ErrorPage404() =>
-            RedirectToAction("HttpStatusCodeHandler", "Error", new {statusCode = 404});
     }
 }

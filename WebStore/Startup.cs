@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebStore.Infrastructure.Interfaces;
+using WebStore.Infrastructure.Services;
 using WebStore.Models;
 
 namespace WebStore
@@ -22,9 +24,15 @@ namespace WebStore
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
+            //services.AddSingleton<AppDbContext>();
+
             services.AddControllersWithViews();
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
+
+            services.AddScoped<IEmployeesData, EmployeesData>();
+            //services.AddSingleton<EmployeesData>();
+            //services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

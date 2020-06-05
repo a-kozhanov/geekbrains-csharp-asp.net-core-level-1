@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebStore.Infrastructure.Interfaces;
 using WebStore.Models;
 
 namespace WebStore.Controllers
@@ -9,10 +10,13 @@ namespace WebStore.Controllers
     public class EmployeesController : Controller
     {
         private readonly AppDbContext _context;
+        //private readonly IEmployeesData _employeesData;
 
         public EmployeesController(AppDbContext context)
+            //public EmployeesController(AppDbContext context, IEmployeesData employeesData)
         {
             _context = context;
+            //_employeesData = employeesData;
         }
 
         public async Task<IActionResult> Index()
@@ -20,12 +24,14 @@ namespace WebStore.Controllers
             return View(await _context.Employee.ToListAsync());
         }
 
-        public async Task<IActionResult> Details(long? id)
+        public async Task<IActionResult> Details(long id)
         {
-            if (id == null)
+            if (id < 0)
             {
-                return NotFound();
+                return BadRequest();
             }
+
+            //var employee1 = _employeesData.GetById(id);
 
             var employee = await _context.Employee
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -46,7 +52,9 @@ namespace WebStore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("LastName,FirstName,Title,TitleOfCourtesy,BirthDate,HireDate,Address,City,Region,PostalCode,Country,HomePhone,Extension,Photo,Notes,ReportsTo")] Employee employee)
+            [Bind(
+                "LastName,FirstName,Title,TitleOfCourtesy,BirthDate,HireDate,Address,City,Region,PostalCode,Country,HomePhone,Extension,Photo,Notes,ReportsTo")]
+            Employee employee)
         {
             if (!ModelState.IsValid) return View(employee);
 

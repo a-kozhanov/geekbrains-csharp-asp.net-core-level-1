@@ -1,156 +1,127 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using WebStore.Data;
 using WebStore.Infrastructure.Interfaces;
 using WebStore.Models;
+using WebStore.ViewModels;
 
 namespace WebStore.Controllers
 {
+    //[Route("NewRoute/[controller]/123")]
+    //[Route("Staff")]
     public class EmployeesController : Controller
     {
-        private readonly AppDbContext _context;
-        //private readonly IEmployeesData _employeesData;
+        private readonly IEmployeesData _EmployeesData;
 
-        public EmployeesController(AppDbContext context)
-            //public EmployeesController(AppDbContext context, IEmployeesData employeesData)
+        public EmployeesController(IEmployeesData EmployeesData)
         {
-            _context = context;
-            //_employeesData = employeesData;
+            _EmployeesData = EmployeesData;
         }
 
-        public async Task<IActionResult> Index()
+        //[Route("List")]
+        public IActionResult Index() => View(_EmployeesData.Get());
+
+        //[Route("{id}")]
+        public IActionResult EmployeeDetails(int id)
         {
-            return View(await _context.Employee.ToListAsync());
+            var employee = _EmployeesData.GetById(id);
+            if (employee is null)
+                return NotFound();
+
+            return View(employee);
         }
 
-        public async Task<IActionResult> Details(long id)
+        #region Редактирование
+
+        public IActionResult Edit(int? Id)
         {
-            if (id < 0)
-            {
+            if (Id is null) return View(new EmployeeViewModel());
+
+            if (Id < 0)
                 return BadRequest();
-            }
 
-            //var employee1 = _employeesData.GetById(id);
-
-            var employee = await _context.Employee
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (employee == null)
-            {
+            var employee = _EmployeesData.GetById((int)Id);
+            if (employee is null)
                 return NotFound();
-            }
 
-            return View(employee);
-        }
-
-        public IActionResult Create()
-        {
-            return View();
+            return View(new EmployeeViewModel
+            {
+                Id = employee.Id,
+                Surname = employee.Surname,
+                Name = employee.FirstName,
+                Patronymic = employee.Patronymic,
+                Age = employee.Age
+            });
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind(
-                "LastName,FirstName,Title,TitleOfCourtesy,BirthDate,HireDate,Address,City,Region,PostalCode,Country,HomePhone,Extension,Photo,Notes,ReportsTo")]
-            Employee employee)
+        public IActionResult Edit(EmployeeViewModel Model)
         {
-            if (!ModelState.IsValid) return View(employee);
+            if (Model is null)
+                throw new ArgumentNullException(nameof(Model));
 
-            var lastId = _context.Employee.Max(x => x.Id);
+            if(Model.Age < 18 || Model.Age > 75)
+                ModelState.AddModelError("Age", "Сотрудник не проходит по возрасту");
 
-            employee.Id = lastId + 1;
+            if(Model.Name == "123" && Model.Surname == "QWE")
+                ModelState.AddModelError(string.Empty, "Странное сочетание имени и фамилии");
 
-            _context.Add(employee);
+            if (!ModelState.IsValid)
+                return View(Model);
 
-            await _context.SaveChangesAsync();
+            var employee = new Employee
+            {
+                Id = Model.Id,
+                FirstName = Model.Name,
+                Surname = Model.Surname,
+                Patronymic = Model.Patronymic,
+                Age = Model.Age
+            };
 
-            return RedirectToAction(nameof(Index));
+            if (Model.Id == 0)
+                _EmployeesData.Add(employee);
+            else
+                _EmployeesData.Edit(employee);
+
+            _EmployeesData.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Edit(long? id)
+        #endregion
+
+        #region Удаление
+
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id <= 0)
+                return BadRequest();
 
-            var employee = await _context.Employee.FindAsync(id);
-            if (employee == null)
-            {
+            var employee = _EmployeesData.GetById(id);
+            if (employee is null)
                 return NotFound();
-            }
 
-            return View(employee);
+            return View(new EmployeeViewModel
+            {
+                Id = employee.Id,
+                Surname = employee.Surname,
+                Name = employee.FirstName,
+                Patronymic = employee.Patronymic,
+                Age = employee.Age
+            });
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id,
-            [Bind(
-                "Id,LastName,FirstName,Title,TitleOfCourtesy,BirthDate,HireDate,Address,City,Region,PostalCode,Country,HomePhone,Extension,Photo,Notes,ReportsTo,PhotoPath")]
-            Employee employee)
+        public IActionResult DeleteConfirmed(int id)
         {
-            if (id != employee.Id)
-            {
-                return NotFound();
-            }
+            _EmployeesData.Delete(id);
+            _EmployeesData.SaveChanges();
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(employee);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EmployeeExists(employee.Id))
-                    {
-                        return NotFound();
-                    }
-
-                    throw;
-                }
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(employee);
+            return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var employee = await _context.Employee
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            return View(employee);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            var employee = await _context.Employee.FindAsync(id);
-            _context.Employee.Remove(employee);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool EmployeeExists(long id)
-        {
-            return _context.Employee.Any(e => e.Id == id);
-        }
+        #endregion
     }
 }

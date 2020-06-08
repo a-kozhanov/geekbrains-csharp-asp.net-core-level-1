@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using WebStore.Models;
 
 namespace WebStore.Infrastructure.Interfaces
@@ -11,13 +10,13 @@ namespace WebStore.Infrastructure.Interfaces
     {
         IEnumerable<Employee> Get();
 
-        Employee GetById(long id);
+        Employee GetById(int id);
 
-        long Add(Employee employee);
+        int Add(Employee Employee);
 
-        void Edit(Employee employee);
+        void Edit(Employee Employee);
 
-        EntityEntry<Employee> Delete(long id);
+        bool Delete(int id);
 
         void SaveChanges();
     }
